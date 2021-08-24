@@ -1,0 +1,78 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from openpyxl.workbook import Workbook
+import time
+import pandas as pd
+
+#from selenium.webdriver.common.action_chains import ActionChains
+
+driver = webdriver.Chrome(r"C:\Users\T Venkata Navaneeth\PycharmProjects\pythonProject\drive\chromedriver.exe")
+
+driver.set_page_load_timeout("10")
+driver.get("https://doeresults.gitam.edu/onlineresults/pages/newgrdcrdinput1.aspx")
+driver.maximize_window()
+reg=[]
+name = []
+cgpa = []
+for i in range(1,62):
+    if(i<=9):
+        if(i==41):
+            continue
+        k=1218104020
+        a=int(str(k) +str(0)+ str(i))
+        driver.find_element_by_name("cbosem").send_keys("6")
+        driver.find_element_by_name("txtreg").clear()
+        driver.find_element_by_name("txtreg").send_keys(str(a))
+        driver.find_element_by_name("Button1").send_keys(Keys.ENTER)
+
+        try:
+            e = driver.find_element_by_id("lblregdno")
+            reg.append(str(e.text))
+            n = driver.find_element_by_id("lblname")
+            name.append(str(n.text))
+            c = driver.find_element_by_id("lblcgpa")
+            cgpa.append(str(c.text))
+        except:
+            continue
+
+        time.sleep(2)
+        driver.back()
+    else:
+        #if (i == 31 or i==57 or i==14 or i==46):
+         # continue
+
+        k=1218104020
+        a = int(str(k) + str(i))
+        driver.find_element_by_name("cbosem").send_keys("6")
+        driver.find_element_by_name("txtreg").clear()
+        driver.find_element_by_name("txtreg").send_keys(str(a))
+
+
+        driver.find_element_by_name("Button1").send_keys(Keys.ENTER)
+        try:
+            e = driver.find_element_by_id("lblregdno")
+            reg.append(str(e.text))
+            n = driver.find_element_by_id("lblname")
+            name.append(str(n.text))
+            c = driver.find_element_by_id("lblcgpa")
+            cgpa.append(str(c.text))
+        except:
+            continue
+
+        time.sleep(1)
+        driver.back()
+#time.sleep(4)
+driver.quit()
+
+#data=[]
+#data.append({'reg': reg ,'name' : name,'cgpa' : cgpa})
+
+percentile_list = pd.DataFrame({'reg': reg ,'name' : name,'cgpa' : cgpa},)
+#writer = pd.ExcelWriter('output.xlsx')
+# write dataframe to excel
+percentile_list.to_excel('outputA2.xlsx')
+# save the excel
+#writer.save()
+percentile_list.sort_values
+print(percentile_list)
