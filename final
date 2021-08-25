@@ -126,3 +126,12 @@ elif(choice==2):
 
 else:
     print("wrong option")
+
+
+#pip install selenium
+#add interpreter selenium
+
+#add interpreter pandas
+
+#pip install openpyxl
+#add interpreter openpyxl
