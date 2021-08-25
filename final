@@ -1,0 +1,128 @@
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from openpyxl.workbook import Workbook
+import time
+import pandas as pd
+branch=input("Enter number according to campus \n 1)Visakhapatnam \n 2)Hyderabad\n 3)Bengaluru \n")
+year=input("Enter joining year in two digits \n")
+branch1=input("enter you branch code \n")
+sem=input("enter semister number\n")
+ex=raw_input("Enter name of excel sheet\n")
+choice=input("enter your choice \n 1)specific section \n 2)all section\n")
+tt=0
+if(choice==1):
+    sec=raw_input("enter section in two digits\n")
+    driver = webdriver.Chrome(r"C:\Users\T Venkata Navaneeth\PycharmProjects\pythonProject\drive\chromedriver.exe")
+    driver.set_page_load_timeout("10")
+    driver.get("https://doeresults.gitam.edu/onlineresults/pages/newgrdcrdinput1.aspx")
+    driver.maximize_window()
+    reg = []
+    name = []
+    cgpa = []
+    for i in range(1,90):
+        if (i<= 9):
+            a = int(str(branch) +str("2")+str(year)+str("10")+str(branch1)+ str(sec) + str(0) + str(0) + str(i))
+            driver.find_element_by_name("cbosem").send_keys(sem)
+            driver.find_element_by_name("txtreg").clear()
+            driver.find_element_by_name("txtreg").send_keys(str(a))
+            driver.find_element_by_name("Button1").send_keys(Keys.ENTER)
+            try:
+                e = driver.find_element_by_id("lblregdno")
+                reg.append(str(e.text))
+                n = driver.find_element_by_id("lblname")
+                name.append(str(n.text))
+                c = driver.find_element_by_id("lblcgpa")
+                cgpa.append(str(c.text))
+            except:
+                tt=tt+1
+                continue
+            time.sleep(2)
+            driver.back()
+        else:
+            a = int(str(branch) + str("2") + str(year) + str("10") + str(branch1) +str(sec)  + str("0") + str(i))
+            driver.find_element_by_name("cbosem").send_keys(sem)
+            driver.find_element_by_name("txtreg").clear()
+            driver.find_element_by_name("txtreg").send_keys(str(a))
+            driver.find_element_by_name("Button1").send_keys(Keys.ENTER)
+            try:
+                e = driver.find_element_by_id("lblregdno")
+                reg.append(str(e.text))
+                n = driver.find_element_by_id("lblname")
+                name.append(str(n.text))
+                c = driver.find_element_by_id("lblcgpa")
+                cgpa.append(str(c.text))
+            except:
+                tt = tt + 1
+                if tt >= 20:
+                    break
+                continue
+            time.sleep(1)
+            driver.back()
+
+    driver.quit()
+
+    percentile_list = pd.DataFrame({'reg': reg, 'name': name, 'cgpa': cgpa}, )
+    jj=str(ex)+str(".xlsx")
+    percentile_list.to_excel(jj)
+    print(percentile_list)
+    print(tt)
+elif(choice==2):
+    total=int(input("Enter Total number of section in your branch\n"))
+    driver = webdriver.Chrome(r"C:\Users\T Venkata Navaneeth\PycharmProjects\pythonProject\drive\chromedriver.exe")
+    driver.set_page_load_timeout("10")
+    driver.get("https://doeresults.gitam.edu/onlineresults/pages/newgrdcrdinput1.aspx")
+    driver.maximize_window()
+    reg = []
+    name = []
+    cgpa = []
+    for sec in range(1,total+1):
+
+        for i in range(1,90):
+            if (i <= 9):
+                a = int(
+                    str(branch) + str("2") + str(year) + str("10") + str(branch1) + str("0")+ str(sec) + str(0) + str(0) + str(i))
+                driver.find_element_by_name("cbosem").send_keys(sem)
+                driver.find_element_by_name("txtreg").clear()
+                driver.find_element_by_name("txtreg").send_keys(str(a))
+                driver.find_element_by_name("Button1").send_keys(Keys.ENTER)
+
+                try:
+                    e = driver.find_element_by_id("lblregdno")
+                    reg.append(str(e.text))
+                    n = driver.find_element_by_id("lblname")
+                    name.append(str(n.text))
+                    c = driver.find_element_by_id("lblcgpa")
+                    cgpa.append(str(c.text))
+                except:
+                    continue
+                    # tt=tt+1
+
+                time.sleep(2)
+                driver.back()
+            else:
+                a = int(str(branch) + str("2") + str(year) + str("10") + str(branch1) +str("0")+ str(sec) + str("0") + str(i))
+                driver.find_element_by_name("cbosem").send_keys(sem)
+                driver.find_element_by_name("txtreg").clear()
+                driver.find_element_by_name("txtreg").send_keys(str(a))
+                driver.find_element_by_name("Button1").send_keys(Keys.ENTER)
+                try:
+                    e = driver.find_element_by_id("lblregdno")
+                    reg.append(str(e.text))
+                    n = driver.find_element_by_id("lblname")
+                    name.append(str(n.text))
+                    c = driver.find_element_by_id("lblcgpa")
+                    cgpa.append(str(c.text))
+                except:
+                    if tt >=20:
+                        break
+                    continue
+                time.sleep(1)
+                driver.back()
+    driver.quit()
+    percentile_list = pd.DataFrame({'reg': reg, 'name': name, 'cgpa': cgpa}, )
+    jj = str(ex) + str(".xlsx")
+    percentile_list.to_excel(jj)
+    print(percentile_list)
+
+else:
+    print("wrong option")
